@@ -1,6 +1,6 @@
 # Workflow-Logs
 
-A personal workflow log for the work a commit history doesn't show: investigations, debugging, research, prototyping, data pulls, reviews, help given, meetings, and why decisions were made. It lives in one claude.ai artifact that keeps the same URL, so you can share it once and it stays current. Entries come from GitHub, your Claude Code sessions, Linear, optionally Slack, and what you tell it.
+A personal workflow log for the work a commit history doesn't show: investigations, debugging, research, prototyping, data pulls, reviews, help given, meetings, and why decisions were made. It lives in one claude.ai artifact that keeps the same URL, so you can share it once and it stays current: a short overview of the big and medium work on top, the day-by-day log below. Entries come from GitHub, your Claude Code sessions, Linear, optionally Slack, and what you tell it.
 
 ## Install
 
@@ -41,14 +41,16 @@ Needs `python3` (3.9+) and an authenticated `gh`. Linear and Slack are read thro
 | `/workflow-logs:workflow-logs checkin`               | Shows what today's log has and asks about what Claude couldn't see (meetings, brainstorming)  |
 | `/workflow-logs:workflow-logs add <note>`            | Adds one hand-written item for today; `add 2026-10-01 <note>` for another day                 |
 | `/workflow-logs:workflow-logs update`                | Adds everything since the last refresh from GitHub and Claude sessions                         |
+| `/workflow-logs:workflow-logs overview`              | Rebuilds the overview of big and medium work from the whole log (update does it once a day)    |
 
-You don't need to run `update` yourself: a Stop hook runs it in the background at most once an hour, as a headless Sonnet run that may only run the plugin's three scripts, write your log and touch `~/.local/share/workflow-logs`. Its output is in `~/.local/share/workflow-logs/state/last-auto-run.log`. After 17:00 the same hook reminds you once a day to run `checkin`.
+You don't need to run `update` yourself: a Stop hook runs it in the background at most once an hour, as a headless Sonnet run that may only run the plugin's four scripts, write your log and touch `~/.local/share/workflow-logs`. Its output is in `~/.local/share/workflow-logs/state/last-auto-run.log`. After 17:00 the same hook reminds you once a day to run `checkin`.
 
 ## How it works
 
 - `scripts/sessions.py` and `scripts/github.py` pull the raw facts into per-day digests under `~/.local/share/workflow-logs/cache/`. No model is involved in this step.
 - Backfill launches one `workflow-logs-collector` agent (Sonnet, high effort) per month, three at a time. Each turns its month into items, plus questions about what the sources hint at but can't show.
 - `scripts/merge.py` combines new items with what the log already holds, and the skill writes the result to the artifact's database, one document per day. Nothing is ever deleted, and items you added by hand are never changed.
+- `scripts/overview.py` gives the model the whole log in short form and checks the overview it writes, which replaces the one document at the top of the page.
 - `skills/workflow-logs/items.md` is the item format and the writing rules; `skills/workflow-logs/page/workflow-logs.html` is the page.
 
 ## Limits

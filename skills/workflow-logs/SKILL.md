@@ -1,12 +1,12 @@
 ---
 name: workflow-logs
-description: Keep a personal workflow log, published as one claude.ai artifact, of what you did and why (shipped PRs, reviews, help given, investigations, research, data work, decisions, meetings), built from GitHub, Claude Code sessions, Linear, optionally Slack, and what you tell it. Use for /workflow-logs backfill <6m|12m|YYYY-MM-DD> [--slack], /workflow-logs update, /workflow-logs checkin [YYYY-MM-DD], /workflow-logs add [YYYY-MM-DD] <note>, or when the user asks to log, record or backfill their work.
-argument-hint: "backfill <6m|12m|YYYY-MM-DD> [--slack] | update | checkin [YYYY-MM-DD] | add [YYYY-MM-DD] <note>"
+description: Keep a personal workflow log, published as one claude.ai artifact, of what you did and why (shipped PRs, reviews, help given, investigations, research, data work, decisions, meetings), built from GitHub, Claude Code sessions, Linear, optionally Slack, and what you tell it. Use for /workflow-logs backfill <6m|12m|YYYY-MM-DD> [--slack], /workflow-logs update, /workflow-logs checkin [YYYY-MM-DD], /workflow-logs add [YYYY-MM-DD] <note>, /workflow-logs overview, or when the user asks to log, record, backfill or sum up their work.
+argument-hint: "backfill <6m|12m|YYYY-MM-DD> [--slack] | update | checkin [YYYY-MM-DD] | add [YYYY-MM-DD] <note> | overview"
 ---
 
 # Workflow log
 
-A paper trail of the work a commit history doesn't show: investigations, debugging, research, prototyping, data pulls, reviews, help given, meetings, and the reasoning behind decisions. The log is one artifact page that always keeps the same URL; each run adds rows to its database and never republishes the page. Read [items.md](items.md) before writing any items, and follow it exactly.
+A paper trail of the work a commit history doesn't show: investigations, debugging, research, prototyping, data pulls, reviews, help given, meetings, and the reasoning behind decisions. The log is one artifact page that always keeps the same URL, with an overview of the big and medium work on top and the day-by-day log below; each run adds rows to its database and never republishes the page. Read [items.md](items.md) before writing any items, and follow it exactly.
 
 ## Setup
 
@@ -24,6 +24,8 @@ Call them as `python3 <this skill's folder>/scripts/<name>.py` with the absolute
 - `sessions.py --since <day> --until <day> --out <file>`: your Claude Code sessions per day (title, prompts, last answer).
 - `github.py --since <day> --until <day> --out <file>`: PRs you opened and reviewed per day, with the start of each description.
 - `merge.py --items <file>... --out <dir> [--since <day> --until <day>]`: combines new items with the stored days and writes `plan.json`; with a range it also lists weekdays that still have nothing logged.
+- `overview.py digest --out <file>`: every stored day as one short line per item, for writing the overview.
+- `overview.py build --draft <file> --out <file>`: checks a drafted overview against items.md and writes the document to save.
 
 ## Saving items
 
@@ -47,7 +49,8 @@ Adds what happened since the last refresh, from GitHub and Claude sessions. The 
 2. `github.py --since last-update --until today --out update/github.md`. If it fails, carry on with sessions only.
 3. Turn both into items in `update/items.json`, then save them.
 4. Write today's date (`YYYY-MM-DD`) to `<data dir>/state/last-update`.
-5. Reply in at most five lines: items saved per day, and any source that failed.
+5. If `<data dir>/state/last-overview` is missing or holds an earlier date, run the overview mode.
+6. Reply in at most five lines: items saved per day, whether the overview was rebuilt, and any source that failed.
 
 ### backfill <6m | 12m | YYYY-MM-DD> [--slack]
 
@@ -59,7 +62,8 @@ Builds a past range from GitHub, Claude sessions and Linear, plus public Slack c
 4. Save all the month items files together, with `--since <first day> --until today`.
 5. Ask about the gaps, one month at a time, newest first. For each month, list in one short message the collectors' questions and the weekdays with nothing logged, and ask what happened: meetings, brainstorming, calls, help given in person, time off. Tell the user they can answer briefly, skip anything, or say stop. Turn each answer into `manual` items (a decision made in a meeting goes under `decisions`), keep their facts and add nothing, and save them before moving to the next month.
 6. Write today's date to `<data dir>/state/last-update` if the file is missing or holds an earlier date.
-7. Report a short table: month, items saved, sources a collector could not use. Say how far back session data went, and give the artifact link.
+7. Run the overview mode.
+8. Report a short table: month, items saved, sources a collector could not use. Say how far back session data went, and give the artifact link.
 
 ### checkin [YYYY-MM-DD]
 
@@ -73,3 +77,14 @@ Collects what the sources can't see for one day, today by default.
 ### add [YYYY-MM-DD] <note>
 
 Saves one hand-written item, today by default: a `manual` item in the category the note fits (`notes` when unsure), rewritten as one sentence in the items style, keeping the user's facts and adding nothing.
+
+### overview
+
+Rebuilds the overview at the top of the page from the whole log. Update runs it once a day and backfill at its end. Read the Overview section of items.md first.
+
+1. `ArtifactData` `query` on collection `days`, `query` `{"limit": 1000}`, `out_dir` `<data dir>/cache/db`. Then `ArtifactData` `get` on `overview` / `current` and note its version (it is missing the first time).
+2. `overview.py digest --out overview/log.md`, then read that file.
+3. Write the overview to `<data dir>/cache/overview/draft.json`, shaped as in items.md.
+4. `overview.py build --draft overview/draft.json --out overview/current.json`. If it refuses the draft, fix what it names and run it again.
+5. `ArtifactData` `set` on collection `overview`, doc id `current`, `file_path` the built file, plus `if_version` from step 1 when the document existed. If it is refused because the document changed, get it again and retry once.
+6. Write today's date to `<data dir>/state/last-overview`.

@@ -27,7 +27,7 @@ lock="$state/lock"
 mkdir "$lock" 2>/dev/null || exit 0
 touch "$state/last-auto-run"
 
-# Runs from the data dir so no project CLAUDE.md loads; it may only run the three scripts, write the log and its own files.
+# Runs from the data dir so no project CLAUDE.md loads; it may only run the plugin's scripts, write the log and its own files.
 # The explicit permission mode overrides a user default of plan, which would refuse every write.
 scripts="$CLAUDE_PLUGIN_ROOT/skills/workflow-logs/scripts"
 cd "$dir" || exit 0
@@ -35,7 +35,7 @@ nohup bash -c '
   trap "rmdir \"$1\"" EXIT
   WORKFLOW_LOGS_RUNNING=1 claude -p "/workflow-logs:workflow-logs update" \
     --model sonnet --effort high --no-session-persistence --permission-mode default --add-dir "$4" \
-    --allowedTools "Bash(python3 $2/sessions.py:*)" "Bash(python3 $2/github.py:*)" "Bash(python3 $2/merge.py:*)" \
+    --allowedTools "Bash(python3 $2/sessions.py:*)" "Bash(python3 $2/github.py:*)" "Bash(python3 $2/merge.py:*)" "Bash(python3 $2/overview.py:*)" \
       "ToolSearch" "ArtifactData" "Edit(/$3/**)"
 ' _ "$lock" "$scripts" "$dir" "$CLAUDE_PLUGIN_ROOT" >"$state/last-auto-run.log" 2>&1 </dev/null &
 exit 0

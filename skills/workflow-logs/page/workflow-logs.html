@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: an engineer's logbook. Month sections, day entries down one reading column, evidence as mono chips. */
+/* Layout: an engineer's logbook. An overview of the big and medium work on top, then month sections with day entries down one reading column, evidence as mono chips. */
 :root {
   --bg: #f5f7fa;
   --surface: #ffffff;
@@ -39,6 +39,24 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-body); f
 header.top { display: grid; gap: 14px; }
 h1 { font-family: var(--font-display); font-weight: 600; font-size: 30px; line-height: 1.1; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
 .sub { color: var(--muted); margin: 0; font-size: 14px; }
+.part { margin-top: 32px; display: grid; gap: 12px; }
+.part-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
+.part-head h2 { font-family: var(--font-display); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.part-meta { margin: 0; font-size: 13px; color: var(--muted); }
+.overview { display: grid; gap: 22px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 18px 20px; }
+.ov-group { display: grid; gap: 4px; }
+.ov-size { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; display: flex; gap: 8px; align-items: baseline; }
+.ov-size .n { font-family: var(--font-mono); font-size: 12px; font-weight: 400; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.ov-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.ov-item { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: 4px 18px; padding-block: 10px; border-top: 1px solid var(--rule); }
+.ov-when { font-family: var(--font-mono); font-size: 13px; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.ov-when .wk { display: block; color: var(--muted); font-size: 12px; }
+.ov-body { display: grid; gap: 2px; min-width: 0; border-left: 2px solid var(--rule); padding-left: 12px; }
+.ov-body h4 { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.35; text-wrap: balance; }
+.ov-body p { margin: 0; max-width: 68ch; color: var(--muted); overflow-wrap: anywhere; }
+.ov-group.big .ov-body { border-left: 3px solid var(--fg); }
+.ov-group.big .ov-body h4 { font-family: var(--font-display); font-size: 18px; }
+.overview .state { padding-block: 4px; }
 .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--rule); }
 .search { flex: 1 1 220px; min-width: 0; font: inherit; font-size: 14px; color: var(--fg); background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 7px 10px; }
 .search:focus-visible, .filter:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -49,9 +67,9 @@ h1 { font-family: var(--font-display); font-weight: 600; font-size: 30px; line-h
 .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--cat); }
 .state { color: var(--muted); padding-block: 40px; max-width: 60ch; }
 .state code { font-family: var(--font-mono); font-size: 13px; background: var(--chip); padding: 1px 5px; border-radius: 4px; }
-.month { margin-top: 36px; }
+.month { margin-top: 24px; }
 .month-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; border-bottom: 2px solid var(--fg); padding-bottom: 6px; }
-.month-head h2 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin: 0; }
+.month-head h3 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin: 0; }
 .tally { display: flex; flex-wrap: wrap; gap: 4px 12px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .tally span { display: inline-flex; gap: 5px; align-items: center; }
 .day { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 4px 18px; padding-block: 16px; border-bottom: 1px solid var(--rule); }
@@ -70,8 +88,9 @@ a.chip:hover { text-decoration: underline; }
 .hand { font-size: 12px; color: var(--muted); font-style: italic; }
 @media (max-width: 560px) {
   .wrap { padding-inline: 16px; }
-  .day { grid-template-columns: minmax(0, 1fr); }
-  .day-date .wk { display: inline; margin-left: 8px; }
+  .overview { padding: 14px; }
+  .day, .ov-item { grid-template-columns: minmax(0, 1fr); }
+  .day-date .wk, .ov-when .wk { display: inline; margin-left: 8px; }
 }
 @media (prefers-reduced-motion: no-preference) { .filter { transition: box-shadow 120ms ease, border-color 120ms ease; } }
 </style>
@@ -81,11 +100,23 @@ a.chip:hover { text-decoration: underline; }
     <h1>Workflow Logs</h1>
     <p class="sub" id="summary">What was done and why, including the work a commit history doesn't show.</p>
   </header>
-  <div class="controls">
-    <input class="search" id="search" type="search" placeholder="Search entries, people, tickets" aria-label="Search entries">
-    <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
-  </div>
-  <main id="log"><p class="state">Loading entries…</p></main>
+  <main>
+    <section class="part" aria-labelledby="overview-title">
+      <div class="part-head">
+        <h2 id="overview-title">Overview</h2>
+        <p class="part-meta" id="overview-meta">The big and medium work in the log.</p>
+      </div>
+      <div class="overview" id="overview"><p class="state">Loading overview…</p></div>
+    </section>
+    <section class="part" aria-labelledby="log-title">
+      <div class="part-head"><h2 id="log-title">Daily log</h2></div>
+      <div class="controls">
+        <input class="search" id="search" type="search" placeholder="Search entries, people, tickets" aria-label="Search entries">
+        <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
+      </div>
+      <div id="log"><p class="state">Loading entries…</p></div>
+    </section>
+  </main>
 </div>
 
 <script>
@@ -204,7 +235,7 @@ function render() {
     }
     const section = el('section', { class: 'month', id: key, 'aria-label': key },
       el('div', { class: 'month-head' },
-        el('h2', { text: new Date(y, m - 1, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }) }),
+        el('h3', { text: new Date(y, m - 1, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }) }),
         tally));
     for (const day of days) {
       const date = new Date(day.date + 'T00:00:00');
@@ -232,6 +263,52 @@ function render() {
   log.replaceChildren(...sections);
 }
 
+const SIZES = [['big', 'Big'], ['medium', 'Medium']];
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+function overviewMessage(...parts) {
+  const msg = el('p', { class: 'state' });
+  msg.append(...parts);
+  $('overview').replaceChildren(msg);
+}
+
+function period(from, to) {
+  const a = new Date(from + 'T00:00:00'), b = new Date(to + 'T00:00:00');
+  const opts = { month: 'short', day: 'numeric', ...(a.getFullYear() !== b.getFullYear() && { year: 'numeric' }) };
+  const fmt = (d) => d.toLocaleDateString(undefined, opts);
+  const wa = 'W' + String(isoWeek(a)).padStart(2, '0'), wb = 'W' + String(isoWeek(b)).padStart(2, '0');
+  return el('div', { class: 'ov-when' }, from === to ? fmt(a) : `${fmt(a)} – ${fmt(b)}`, el('span', { class: 'wk', text: wa === wb ? wa : `${wa}–${wb}` }));
+}
+
+function renderOverview(body) {
+  if (!body) {
+    overviewMessage('No overview yet. In Claude Code, run ', el('code', { text: '/workflow-logs:workflow-logs overview' }), ' to build it from the log.');
+    return;
+  }
+  const items = (Array.isArray(body.items) ? body.items : []).filter((i) => i && SIZES.some(([k]) => k === i.size)
+    && typeof i.title === 'string' && ISO_DAY.test(i.from) && ISO_DAY.test(i.to));
+  const meta = [];
+  if (ISO_DAY.test(body.through)) meta.push('Built from the log through ' + new Date(body.through + 'T00:00:00').toLocaleDateString(undefined, { dateStyle: 'medium' }) + '.');
+  if (body.updated_at) meta.push('Updated ' + new Date(body.updated_at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) + '.');
+  $('overview-meta').textContent = meta.join(' ') || 'The big and medium work in the log.';
+  if (!items.length) {
+    overviewMessage('The overview is empty.');
+    return;
+  }
+  const groups = [];
+  for (const [size, name] of SIZES) {
+    const group = items.filter((i) => i.size === size).sort((x, y) => y.to.localeCompare(x.to) || y.from.localeCompare(x.from));
+    if (!group.length) continue;
+    const list = el('ol', { class: 'ov-list' });
+    for (const item of group) {
+      list.append(el('li', { class: 'ov-item' }, period(item.from, item.to),
+        el('div', { class: 'ov-body' }, el('h4', { text: item.title }), item.text ? el('p', { text: String(item.text) }) : null)));
+    }
+    groups.push(el('div', { class: `ov-group ${size}` }, el('h3', { class: 'ov-size' }, name, el('span', { class: 'n', text: String(group.length) })), list));
+  }
+  $('overview').replaceChildren(...groups);
+}
+
 function normalize(doc) {
   const body = doc.data() || {};
   const items = Array.isArray(body.items) ? body.items.filter((i) => i && LABEL[i.category]) : [];
@@ -244,9 +321,13 @@ render();
 (async () => {
   const db = await claude.use('db');
   if (!db) {
-    $('log').replaceChildren(el('p', { class: 'state', text: "Entries can't load in this view. Open the log on claude.ai while signed in to an account it's shared with." }));
+    overviewMessage("The log can't load in this view. Open it on claude.ai while signed in to an account it's shared with.");
+    $('log').replaceChildren();
     return;
   }
+  db.doc('overview/current').onSnapshot((snap) => renderOverview(snap.exists ? snap.data() : null), () => {
+    overviewMessage('The overview stopped updating. Reload the page to see the latest version.');
+  });
   db.collection('days').orderBy('date', 'desc').limit(1000).onSnapshot((snap) => {
     state.days = snap.docs.filter((d) => d.exists).map(normalize).filter((d) => d.items.length);
     state.loaded = true;

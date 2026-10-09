@@ -60,6 +60,40 @@ The log is a history people skim, not a report. Each item says what happened in 
 
 The sources can't see meetings, brainstorming, calls, whiteboard sessions, help given in person, interviews, or what someone read or learned. When a source hints at one (a "let's discuss tomorrow", a PR that follows a decision with no visible discussion, a session that starts from "after the meeting we agreed…"), add a short question naming the day and what you saw. Ask what happened, with whom, and what came out of it. Don't ask about anything the sources already answer.
 
+## Overview
+
+The top of the page sums up the log's big and medium pieces of work. It is one document, collection `overview`, doc id `current`, rebuilt from the whole log each time. Write a draft shaped like this and let `overview.py build` check it:
+
+```json
+{
+  "items": [
+    {
+      "size": "big",
+      "title": "New checkout page",
+      "from": "2026-09-14",
+      "to": "2026-10-09",
+      "text": "Rebuilt the checkout page with design, from the QA plan to the launch fixes."
+    }
+  ]
+}
+```
+
+The example shows the shape only; never copy it into an overview.
+
+| Field   | Rule                                                                                  |
+| ------- | ------------------------------------------------------------------------------------- |
+| `size`  | `big` or `medium` (see below)                                                         |
+| `title` | The piece of work as a teammate would name it, 60 characters at most                  |
+| `from`  | First day in the log that belongs to it, `YYYY-MM-DD`                                 |
+| `to`    | Last day in the log that belongs to it                                                |
+| `text`  | One or two short sentences, 200 characters at most: what it was and what came out of it |
+
+- **Big:** a project or stream of work over a week or more, or one with wide impact: a feature launch, a migration, a major incident, sustained support for a team.
+- **Medium:** a few days of work with a clear result: a notable fix, an investigation, a prototype or tool, a decision that changed a plan.
+- Leave out small one-off fixes, single questions answered and routine reviews. Group the log's items into pieces of work across days; never list single PRs or days.
+- Aim for 5 to 15 items, 25 at most (`overview.py` refuses more). It is an overview people read in a minute, so keep it short.
+- Write only what the log shows, in the same plain style as items. Never invent an outcome, a size or a date.
+
 ## How merging works
 
 - A manual item is added unless the day already has one with the same text.

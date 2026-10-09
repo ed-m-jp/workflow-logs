@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merges new work log items into the artifact's day documents and plans the database writes."""
+"""Merges new workflow log items into the artifact's day documents and plans the database writes."""
 import argparse
 import json
 import sys

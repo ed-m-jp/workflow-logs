@@ -1,7 +1,7 @@
 {
-  "name": "worklog",
-  "version": "0.1.1",
-  "description": "Personal work log built from GitHub, Claude Code sessions, Linear and Slack, refreshed in the background.",
+  "name": "workflow-logs",
+  "version": "0.2.0",
+  "description": "Personal workflow log built from GitHub, Claude Code sessions, Linear and Slack, refreshed in the background.",
   "author": {
     "name": "Edward Maire"
   }

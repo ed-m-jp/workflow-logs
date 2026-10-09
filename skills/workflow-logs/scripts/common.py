@@ -1,4 +1,4 @@
-"""Shared helpers for the worklog scripts: the local data dir, date arguments, output files."""
+"""Shared helpers for the workflow-logs scripts: the local data dir, date arguments, output files."""
 import os
 from datetime import date
 from pathlib import Path
@@ -6,7 +6,7 @@ from pathlib import Path
 
 def data_dir():
     """Local cache and state, outside ~/.claude because Claude Code refuses tool writes there; the log itself lives in the artifact."""
-    path = Path(os.environ.get('XDG_DATA_HOME', '~/.local/share')).expanduser().resolve() / 'worklog'
+    path = Path(os.environ.get('XDG_DATA_HOME', '~/.local/share')).expanduser().resolve() / 'workflow-logs'
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -61,6 +61,6 @@ def write_sections(sections, out, root, header):
 
 def report(root, since, until, written):
     print(f'data dir: {root}')
-    print(f"artifact: {os.environ.get('WORKLOG_ARTIFACT_URL') or 'not set'}")
+    print(f"artifact: {os.environ.get('WORKFLOW_LOGS_ARTIFACT_URL') or 'not set'}")
     print(f'range: {since}..{until}')
     print('wrote: ' + (', '.join(written) if written else 'nothing, no activity in this range'))

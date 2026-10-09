@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Per-day digest of the pull requests you opened and reviewed, for the work log."""
+"""Per-day digest of the pull requests you opened and reviewed, for the workflow log."""
 import argparse
 import json
 import os
@@ -77,9 +77,9 @@ def main():
     parser.add_argument('--out', required=True, help='file path; {month} splits it per month; relative goes under the data dir cache/')
     args = parser.parse_args()
 
-    owner = os.environ.get('WORKLOG_GH_OWNER')
+    owner = os.environ.get('WORKFLOW_LOGS_GH_OWNER')
     if not owner:
-        sys.exit('WORKLOG_GH_OWNER is not set: add the GitHub org to "env" in ~/.claude/settings.json')
+        sys.exit('WORKFLOW_LOGS_GH_OWNER is not set: add the GitHub org to "env" in ~/.claude/settings.json')
     root = data_dir()
     since, until = parse_day(args.since, root), parse_day(args.until, root)
 

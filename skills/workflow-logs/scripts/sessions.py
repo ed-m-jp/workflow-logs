@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Per-day digest of your Claude Code sessions (title, prompts, last answer) for the work log."""
+"""Per-day digest of your Claude Code sessions (title, prompts, last answer) for the workflow log."""
 import argparse
 import json
 import os
@@ -25,7 +25,7 @@ NOISE_COMMANDS = {
 
 
 def transcript_roots():
-    configured = os.environ.get('WORKLOG_TRANSCRIPT_DIRS')
+    configured = os.environ.get('WORKFLOW_LOGS_TRANSCRIPT_DIRS')
     if configured:
         return [Path(p).expanduser() for p in configured.split(':') if p]
     return [Path(os.environ.get('CLAUDE_CONFIG_DIR', '~/.claude')).expanduser() / 'projects']
@@ -56,7 +56,7 @@ def prompt_text(entry):
         args = re.search(r'<command-args>(.*?)</command-args>', content, re.S)
         content = f"/{command.group(1).strip().lstrip('/')} {args.group(1) if args else ''}"
     name = content.split(maxsplit=1)[0] if content.strip() else ''
-    if name in NOISE_COMMANDS or name.startswith('/worklog'):
+    if name in NOISE_COMMANDS or name.startswith(('/workflow-logs', '/worklog')):  # /worklog is this plugin's old name
         return None
 
     # Pasted blocks are bulky and the likeliest place for a secret.

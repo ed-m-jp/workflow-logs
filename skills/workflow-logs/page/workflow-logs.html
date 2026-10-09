@@ -1,4 +1,4 @@
-<title>Work Log</title>
+<title>Workflow Logs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -78,7 +78,7 @@ a.chip:hover { text-decoration: underline; }
 
 <div class="wrap">
   <header class="top">
-    <h1>Work Log</h1>
+    <h1>Workflow Logs</h1>
     <p class="sub" id="summary">What was done and why, including the work a commit history doesn't show.</p>
   </header>
   <div class="controls">
@@ -175,7 +175,7 @@ function render() {
     const msg = el('div', { class: 'state' });
     msg.append(el('p', { text: 'No entries yet.' }));
     const how = el('p');
-    how.append('In Claude Code, run ', el('code', { text: '/worklog:worklog backfill 6m' }), ' to build the last six months, or ', el('code', { text: '/worklog:worklog checkin' }), ' to log today, meetings and brainstorming included.');
+    how.append('In Claude Code, run ', el('code', { text: '/workflow-logs:workflow-logs backfill 6m' }), ' to build the last six months, or ', el('code', { text: '/workflow-logs:workflow-logs checkin' }), ' to log today, meetings and brainstorming included.');
     msg.append(how);
     log.replaceChildren(msg);
     return;

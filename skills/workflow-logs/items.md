@@ -1,4 +1,4 @@
-# Work log items
+# Workflow log items
 
 The log lives in the artifact's database: collection `days`, one document per day (doc id `YYYY-MM-DD`). Nothing writes those documents directly. You write new items to a JSON file, `merge.py` combines them with what is already stored, and the skill sends its plan as one `ArtifactData` batch.
 

@@ -1,6 +1,6 @@
 {
   "name": "workflow-logs",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Personal workflow log built from GitHub, Claude Code sessions, Linear and Slack, refreshed in the background.",
   "author": {
     "name": "Edward Maire"

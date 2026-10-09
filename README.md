@@ -37,7 +37,7 @@ Needs `python3` (3.9+) and an authenticated `gh`. Linear and Slack are read thro
 | Command                                  | What it does                                                                                  |
 | ---------------------------------------- | --------------------------------------------------------------------------------------------- |
 | `/workflow-logs:workflow-logs backfill 6m`           | Builds the last 6 months (`12m` or a `YYYY-MM-DD` start work too), then asks you about the gaps |
-| `/workflow-logs:workflow-logs backfill 6m --slack`   | The same, also reading what you wrote in public Slack channels (never DMs or private channels) |
+| `/workflow-logs:workflow-logs backfill 6m --slack`   | The same, also reading what you wrote in Slack channels you can access, public or private (never DMs or group DMs) |
 | `/workflow-logs:workflow-logs checkin`               | Shows what today's log has and asks about what Claude couldn't see (meetings, brainstorming)  |
 | `/workflow-logs:workflow-logs add <note>`            | Adds one hand-written item for today; `add 2026-10-01 <note>` for another day                 |
 | `/workflow-logs:workflow-logs update`                | Adds everything since the last refresh from GitHub and Claude sessions                         |

@@ -54,7 +54,7 @@ Adds what happened since the last refresh, from GitHub and Claude sessions. The 
 
 ### backfill <6m | 12m | YYYY-MM-DD> [--slack]
 
-Builds a past range from GitHub, Claude sessions and Linear, plus public Slack channels only when `--slack` is given (never direct messages or private channels). Then asks the user about what none of them can show.
+Builds a past range from GitHub, Claude sessions and Linear, plus the Slack channels the user can access, public or private, only when `--slack` is given (never direct or group direct messages). Then asks the user about what none of them can show.
 
 1. Run `sessions.py --since <arg> --until today --out 'backfill/{month}-sessions.md'` and `github.py` with the same range and `--out 'backfill/{month}-github.md'` (`{month}` stays literal). Sessions only reach back to the oldest transcript; each sessions file's header says how far.
 2. Get the user's email with `git config --global user.email`.

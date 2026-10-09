@@ -4,10 +4,14 @@ A personal workflow log for the work a commit history doesn't show: investigatio
 
 ## Install
 
+In Claude Code, run:
+
 ```text
-/plugin marketplace add <path to this repo, or its GitHub owner/repo once pushed>
+/plugin marketplace add ed-m-jp/workflow-logs
 /plugin install workflow-logs@workflow-logs
 ```
+
+Claude Code clones https://github.com/ed-m-jp/workflow-logs with your git credentials, so a private repo needs read access first. To work from a local clone instead, pass its path: `/plugin marketplace add /path/to/workflow-logs`.
 
 Then add this to `~/.claude/settings.json` and restart Claude Code:
 

@@ -1,0 +1,16 @@
+{
+  "name": "claude-worklog",
+  "metadata": {
+    "description": "A personal work log plugin for Claude Code."
+  },
+  "owner": {
+    "name": "Edward Maire"
+  },
+  "plugins": [
+    {
+      "name": "worklog",
+      "source": "./",
+      "description": "Personal work log built from GitHub, Claude Code sessions, Linear and Slack, refreshed in the background."
+    }
+  ]
+}

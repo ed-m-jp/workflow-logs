@@ -1,0 +1,8 @@
+{
+  "name": "worklog",
+  "version": "0.1.1",
+  "description": "Personal work log built from GitHub, Claude Code sessions, Linear and Slack, refreshed in the background.",
+  "author": {
+    "name": "Edward Maire"
+  }
+}

@@ -1,0 +1,258 @@
+<title>Work Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: an engineer's logbook. Month sections, day entries down one reading column, evidence as mono chips. */
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --fg: #18202b;
+  --muted: #5a6575;
+  --rule: #dce2ea;
+  --accent: #2c56c9;
+  --chip: #eef1f6;
+  --c-shipped: #1f8a5b;
+  --c-reviews: #7a4fc2;
+  --c-investigation: #b8740d;
+  --c-research: #13808a;
+  --c-decisions: #2c56c9;
+  --c-notes: #6b7686;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151b; --surface: #171c24; --fg: #e3e8ef; --muted: #96a1b0; --rule: #2a313c; --accent: #7f9ff0; --chip: #212833;
+    --c-shipped: #4cc08b; --c-reviews: #ad8cf0; --c-investigation: #e6a440; --c-research: #45bcc6; --c-decisions: #7f9ff0; --c-notes: #98a3b3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151b; --surface: #171c24; --fg: #e3e8ef; --muted: #96a1b0; --rule: #2a313c; --accent: #7f9ff0; --chip: #212833;
+  --c-shipped: #4cc08b; --c-reviews: #ad8cf0; --c-investigation: #e6a440; --c-research: #45bcc6; --c-decisions: #7f9ff0; --c-notes: #98a3b3;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; }
+header.top { display: grid; gap: 14px; }
+h1 { font-family: var(--font-display); font-weight: 600; font-size: 30px; line-height: 1.1; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.sub { color: var(--muted); margin: 0; font-size: 14px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--rule); }
+.search { flex: 1 1 220px; min-width: 0; font: inherit; font-size: 14px; color: var(--fg); background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 7px 10px; }
+.search:focus-visible, .filter:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.filter { font: inherit; font-size: 13px; color: var(--fg); background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 4px 10px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.filter[aria-pressed="true"] { border-color: var(--fg); box-shadow: inset 0 0 0 1px var(--fg); }
+.filter .n { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--cat); }
+.state { color: var(--muted); padding-block: 40px; max-width: 60ch; }
+.state code { font-family: var(--font-mono); font-size: 13px; background: var(--chip); padding: 1px 5px; border-radius: 4px; }
+.month { margin-top: 36px; }
+.month-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; border-bottom: 2px solid var(--fg); padding-bottom: 6px; }
+.month-head h2 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin: 0; }
+.tally { display: flex; flex-wrap: wrap; gap: 4px 12px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tally span { display: inline-flex; gap: 5px; align-items: center; }
+.day { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 4px 18px; padding-block: 16px; border-bottom: 1px solid var(--rule); }
+.day-date { font-family: var(--font-mono); font-size: 13px; line-height: 1.4; color: var(--fg); }
+.day-date .wk { display: block; color: var(--muted); font-size: 12px; }
+.items { display: grid; gap: 14px; min-width: 0; }
+.cat { display: grid; gap: 8px; }
+.cat-name { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--cat); display: flex; gap: 6px; align-items: center; }
+.item { display: grid; gap: 5px; border-left: 2px solid var(--rule); padding-left: 12px; }
+.item p { margin: 0; max-width: 68ch; overflow-wrap: anywhere; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
+.for { color: var(--muted); }
+.chip { font-family: var(--font-mono); font-size: 12px; background: var(--chip); color: var(--fg); border-radius: 4px; padding: 1px 6px; text-decoration: none; overflow-wrap: anywhere; }
+a.chip { color: var(--accent); }
+a.chip:hover { text-decoration: underline; }
+.hand { font-size: 12px; color: var(--muted); font-style: italic; }
+@media (max-width: 560px) {
+  .wrap { padding-inline: 16px; }
+  .day { grid-template-columns: minmax(0, 1fr); }
+  .day-date .wk { display: inline; margin-left: 8px; }
+}
+@media (prefers-reduced-motion: no-preference) { .filter { transition: box-shadow 120ms ease, border-color 120ms ease; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Work Log</h1>
+    <p class="sub" id="summary">What was done and why, including the work a commit history doesn't show.</p>
+  </header>
+  <div class="controls">
+    <input class="search" id="search" type="search" placeholder="Search entries, people, tickets" aria-label="Search entries">
+    <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
+  </div>
+  <main id="log"><p class="state">Loading entries…</p></main>
+</div>
+
+<script>
+const CATEGORIES = [
+  ['shipped', 'Shipped'],
+  ['reviews', 'Reviews and help'],
+  ['investigation', 'Investigation and debugging'],
+  ['research', 'Research, prototyping and data'],
+  ['decisions', 'Decisions'],
+  ['notes', 'Notes'],
+];
+const LABEL = Object.fromEntries(CATEGORIES);
+const state = { days: [], loaded: false, active: new Set(), query: '' };
+const $ = (id) => document.getElementById(id);
+
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'text') node.textContent = v;
+    else if (k === 'style') node.style.cssText = v;
+    else node.setAttribute(k, v);
+  }
+  for (const child of children) if (child) node.append(child);
+  return node;
+}
+
+function evidenceChip(ev) {
+  if (typeof ev !== 'string' || !ev) return null;
+  if (ev.startsWith('session:')) return el('span', { class: 'chip', text: 'session ' + ev.slice(8, 16) });
+  let url;
+  try { url = new URL(ev); } catch { return el('span', { class: 'chip', text: ev }); }
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return el('span', { class: 'chip', text: ev });
+  const pr = url.pathname.match(/^\/[^/]+\/([^/]+)\/(?:pull|issues)\/(\d+)/);
+  const ticket = url.pathname.match(/\/issue\/([A-Za-z]+-\d+)/);
+  let label = url.hostname.replace(/^www\./, '');
+  if (url.hostname === 'github.com' && pr) label = `${pr[1]}#${pr[2]}`;
+  else if (url.hostname.endsWith('linear.app') && ticket) label = ticket[1].toUpperCase();
+  else if (url.hostname.endsWith('slack.com')) label = 'Slack';
+  return el('a', { class: 'chip', href: url.href, target: '_blank', rel: 'noopener noreferrer', text: label });
+}
+
+function matches(item) {
+  if (state.active.size && !state.active.has(item.category)) return false;
+  if (!state.query) return true;
+  const hay = [item.text, item.for, ...(item.evidence || [])].join(' ').toLowerCase();
+  return hay.includes(state.query);
+}
+
+function isoWeek(date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+}
+
+function renderFilters() {
+  const counts = {};
+  for (const day of state.days) for (const item of day.items) counts[item.category] = (counts[item.category] || 0) + 1;
+  const box = $('filters');
+  box.replaceChildren(...CATEGORIES.map(([key, name]) => {
+    const button = el('button', { class: 'filter', type: 'button', id: 'filter-' + key, 'aria-pressed': String(state.active.has(key)), style: `--cat: var(--c-${key})` },
+      el('span', { class: 'dot' }), el('span', { text: name }), el('span', { class: 'n', text: String(counts[key] || 0) }));
+    button.addEventListener('click', () => {
+      state.active.has(key) ? state.active.delete(key) : state.active.add(key);
+      render();
+    });
+    return button;
+  }));
+}
+
+function renderSummary() {
+  const total = state.days.reduce((n, d) => n + d.items.length, 0);
+  if (!total) return;
+  const dates = state.days.map((d) => d.date).sort();
+  const updated = state.days.map((d) => d.updated_at).filter(Boolean).sort().pop();
+  const parts = [`${total} entries over ${state.days.length} days, ${dates[0]} to ${dates[dates.length - 1]}.`];
+  if (updated) parts.push(`Last updated ${new Date(updated).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}.`);
+  $('summary').textContent = parts.join(' ');
+}
+
+function render() {
+  renderFilters();
+  renderSummary();
+  const log = $('log');
+  if (!state.loaded) return;
+  if (!state.days.length) {
+    const msg = el('div', { class: 'state' });
+    msg.append(el('p', { text: 'No entries yet.' }));
+    const how = el('p');
+    how.append('In Claude Code, run ', el('code', { text: '/worklog:worklog backfill 6m' }), ' to build the last six months, or ', el('code', { text: '/worklog:worklog checkin' }), ' to log today, meetings and brainstorming included.');
+    msg.append(how);
+    log.replaceChildren(msg);
+    return;
+  }
+
+  const months = new Map();
+  for (const day of state.days) {
+    const items = day.items.filter(matches);
+    if (!items.length) continue;
+    const key = day.date.slice(0, 7);
+    if (!months.has(key)) months.set(key, []);
+    months.get(key).push({ ...day, items });
+  }
+  if (!months.size) {
+    log.replaceChildren(el('p', { class: 'state', text: 'Nothing matches this search or filter.' }));
+    return;
+  }
+
+  const sections = [];
+  for (const [key, days] of months) {
+    const [y, m] = key.split('-').map(Number);
+    const tally = el('div', { class: 'tally' });
+    for (const [cat, name] of CATEGORIES) {
+      const n = days.reduce((acc, d) => acc + d.items.filter((i) => i.category === cat).length, 0);
+      if (n) tally.append(el('span', { style: `--cat: var(--c-${cat})`, title: name }, el('span', { class: 'dot' }), `${n} ${name.split(/[ ,]/)[0].toLowerCase()}`));
+    }
+    const section = el('section', { class: 'month', id: key, 'aria-label': key },
+      el('div', { class: 'month-head' },
+        el('h2', { text: new Date(y, m - 1, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }) }),
+        tally));
+    for (const day of days) {
+      const date = new Date(day.date + 'T00:00:00');
+      const when = el('div', { class: 'day-date' },
+        date.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }),
+        el('span', { class: 'wk', text: 'W' + String(isoWeek(date)).padStart(2, '0') }));
+      const items = el('div', { class: 'items' });
+      for (const [cat, name] of CATEGORIES) {
+        const group = day.items.filter((i) => i.category === cat);
+        if (!group.length) continue;
+        const block = el('div', { class: 'cat', style: `--cat: var(--c-${cat})` }, el('div', { class: 'cat-name' }, el('span', { class: 'dot' }), name));
+        for (const item of group) {
+          const meta = el('div', { class: 'meta' });
+          if (item.for) meta.append(el('span', { class: 'for', text: 'For ' + item.for }));
+          for (const ev of item.evidence || []) meta.append(evidenceChip(ev) || '');
+          if (item.manual) meta.append(el('span', { class: 'hand', text: 'added by hand' }));
+          block.append(el('div', { class: 'item' }, el('p', { text: item.text || '' }), meta));
+        }
+        items.append(block);
+      }
+      section.append(el('article', { class: 'day' }, when, items));
+    }
+    sections.push(section);
+  }
+  log.replaceChildren(...sections);
+}
+
+function normalize(doc) {
+  const body = doc.data() || {};
+  const items = Array.isArray(body.items) ? body.items.filter((i) => i && LABEL[i.category]) : [];
+  return { date: String(body.date || doc.id), updated_at: body.updated_at, items };
+}
+
+$('search').addEventListener('input', (e) => { state.query = e.target.value.trim().toLowerCase(); render(); });
+render();
+
+(async () => {
+  const db = await claude.use('db');
+  if (!db) {
+    $('log').replaceChildren(el('p', { class: 'state', text: "Entries can't load in this view. Open the log on claude.ai while signed in to an account it's shared with." }));
+    return;
+  }
+  db.collection('days').orderBy('date', 'desc').limit(1000).onSnapshot((snap) => {
+    state.days = snap.docs.filter((d) => d.exists).map(normalize).filter((d) => d.items.length);
+    state.loaded = true;
+    render();
+  }, () => {
+    $('log').replaceChildren(el('p', { class: 'state', text: 'The log stopped updating. Reload the page to see the latest entries.' }));
+  });
+})();
+</script>
